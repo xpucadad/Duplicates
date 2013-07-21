@@ -4,7 +4,7 @@ use strict;
  
 use Digest::MD5;
 use Data::Dumper;
-use Time::HiRes;
+#use Time::HiRes(sleep);
 
 sub md5($);
 
@@ -13,7 +13,7 @@ $| = 1;
 
 # Get the folder
 my $folder = $ARGV[0];
-print $folder."\n";
+print "Processing folder $folder\n";
 
 # loop over the files
 opendir(FOLDER,$folder) or die "Folder $folder not found.\n";
@@ -60,7 +60,7 @@ foreach my $digest (keys(%$digest_hash)) {
             print "\t$file\n";
             my $command = "open \"$file\"";
             system($command);
-            usleep(500000);
+            sleep(1);
         }
     }
 }
