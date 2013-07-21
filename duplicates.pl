@@ -2,9 +2,9 @@ use warnings;
 use strict;
  
 use Digest::MD5;
+use Data::Dumper;
 
 sub md5($);
-sub get_files_with_digest($$);
 
 # duplicates.pl
 print "This is duplicates.\n";
@@ -25,19 +25,22 @@ while (my $filename = readdir(FOLDER)) {
     $count++;
     # get the files digest
     my $digest = md5($filepath);
-    #print "File # $count: $digest $filename\n";
+    print "File # $count: $digest $filename\n";
     
-    # get all filepaths with that digest
-    my @files_with_digest = get_files_with_digest($digest_hash, $digest);
-    my $dups = @files_with_digest;
-    print "$dups ";
-    if ($dups > 0) {
-        print "\nfound duplicate at $count with digest $digest\n";
+    my $array = $digest_hash->{$digest};
+    if (!$array) {
+        my @new_array = ();
+        $array = \@new_array;
+        $digest_hash->{$digest} = $array;
     }
-    # Add the current file name
-    push (@files_with_digest, $filepath);
+    
+    push (@$array, $filepath);
+    
 }
 closedir(FOLDER);
+
+print Dumper($digest_hash);
+
 # loop through the file hashes
 #   if there is more than one entry in the hash
 #       print the file names
@@ -62,15 +65,3 @@ sub md5($) {
     return $digest;
 }
 
-sub get_files_with_digest($$) {
-    my $digest_hash = shift;
-    my $digest = shift;
-    
-    if (!exists $digest_hash->{$digest}) {
-        my @new_array = ();
-        $digest_hash->{$digest} = \@new_array;
-    }
-    my $files = $digest_hash->{$digest};
-    my @array = @$files;
-    return @array;
-}
