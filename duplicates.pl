@@ -25,7 +25,7 @@ while (my $filename = readdir(FOLDER)) {
     $count++;
     # get the files digest
     my $digest = md5($filepath);
-    print "File # $count: $digest $filename\n";
+    #print "File # $count: $digest $filename\n";
     
     my $array = $digest_hash->{$digest};
     if (!$array) {
@@ -39,14 +39,22 @@ while (my $filename = readdir(FOLDER)) {
 }
 closedir(FOLDER);
 
-print Dumper($digest_hash);
+#print Dumper($digest_hash);
 
 # loop through the file hashes
-#   if there is more than one entry in the hash
-#       print the file names
-#   delete the filenames
-#   delete the hash entry
-# exit
+print "Duplicates found:\n";
+foreach my $digest (keys(%$digest_hash)) {
+    my @files = @{$digest_hash->{$digest}};
+    # if there is more than one entry in the hash
+    if (@files > 1) {
+        print "$digest:\n";
+        foreach my $file (@files) {
+            print "\t$file\n";
+            my $command = "open \"$file\"";
+            system($command);
+        }
+    }
+}
 
 sub md5($) {
     my $file = shift;
