@@ -24,8 +24,8 @@ while (my $filename = readdir(FOLDER)) {
     my $filepath = $folder.'/'.$filename;
     next if (!-f$filepath);    
     $count++;
-    if ($count%10 == 0) { print "."; }
-    if ($count%100 == 0) { print "\n$count\n"; }
+    if ($count%100 == 0) { print "$count "; }
+    if ($count%1000 == 0) { print "\n"; }
     # get the files digest
     my $digest = md5($filepath);
     #print "File # $count: $digest $filename\n";
