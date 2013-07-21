@@ -17,12 +17,15 @@ print "Folder \'$folder\' opened.\n";
 my $count = 0;
 my $digest_hash = {};
 
+print "Loading data...\n";
 while (my $filename = readdir(FOLDER)) {   
     next if ($filename eq "." or $filename eq "..");
 
     my $filepath = $folder.'/'.$filename;
     next if (!-f$filepath);    
     $count++;
+    if ($count%10 == 0) { print "."; }
+    if ($count%100 == 0) { print "\n$count\n"; }
     # get the files digest
     my $digest = md5($filepath);
     #print "File # $count: $digest $filename\n";
@@ -39,14 +42,18 @@ while (my $filename = readdir(FOLDER)) {
 }
 closedir(FOLDER);
 
+print "\nData loaded. Finding duplicates...";
+
 #print Dumper($digest_hash);
 
+my $duplicates = 0;
+
 # loop through the file hashes
-print "Duplicates found:\n";
 foreach my $digest (keys(%$digest_hash)) {
     my @files = @{$digest_hash->{$digest}};
     # if there is more than one entry in the hash
     if (@files > 1) {
+        $duplicates++;
         print "$digest:\n";
         foreach my $file (@files) {
             print "\t$file\n";
@@ -55,6 +62,8 @@ foreach my $digest (keys(%$digest_hash)) {
         }
     }
 }
+
+print "Found $duplicates duplicates.\n";
 
 sub md5($) {
     my $file = shift;
