@@ -1,31 +1,34 @@
+# duplicates.pl
 use warnings;
 use strict;
  
 use Digest::MD5;
 use Data::Dumper;
+use Time::HiRes;
 
 sub md5($);
 
-# duplicates.pl
-print "This is duplicates.\n";
+# Unbuffer stdout
+$| = 1;
+
 # Get the folder
 my $folder = $ARGV[0];
 print $folder."\n";
+
 # loop over the files
 opendir(FOLDER,$folder) or die "Folder $folder not found.\n";
-print "Folder \'$folder\' opened.\n";
 my $count = 0;
 my $digest_hash = {};
 
 print "Loading data...\n";
 while (my $filename = readdir(FOLDER)) {   
     next if ($filename eq "." or $filename eq "..");
-
     my $filepath = $folder.'/'.$filename;
     next if (!-f$filepath);    
     $count++;
     if ($count%100 == 0) { print "$count "; }
     if ($count%1000 == 0) { print "\n"; }
+
     # get the files digest
     my $digest = md5($filepath);
     #print "File # $count: $digest $filename\n";
@@ -36,9 +39,7 @@ while (my $filename = readdir(FOLDER)) {
         $array = \@new_array;
         $digest_hash->{$digest} = $array;
     }
-    
     push (@$array, $filepath);
-    
 }
 closedir(FOLDER);
 
@@ -59,6 +60,7 @@ foreach my $digest (keys(%$digest_hash)) {
             print "\t$file\n";
             my $command = "open \"$file\"";
             system($command);
+            usleep(500000);
         }
     }
 }
