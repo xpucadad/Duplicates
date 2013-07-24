@@ -58,6 +58,8 @@ foreach my $digest (keys(%$digest_hash)) {
         print "$digest:\n";
         foreach my $file (@files) {
             print "\t$file\n";
+            $file =~ s/`/\\`/g;
+            #print "\t\t$file\n";
             my $command = "open \"$file\"";
             system($command);
             sleep(1);
