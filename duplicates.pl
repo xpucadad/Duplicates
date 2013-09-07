@@ -39,6 +39,8 @@ while (my $filename = readdir(FOLDER)) {
         $array = \@new_array;
         $digest_hash->{$digest} = $array;
     }
+    else {print ". "; }
+    
     push (@$array, $filepath);
 }
 closedir(FOLDER);
