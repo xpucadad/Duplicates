@@ -1,7 +1,8 @@
+#!/usr/bin/perl
 # duplicates.pl
 use warnings;
 use strict;
- 
+
 use Digest::MD5;
 use Data::Dumper;
 #use Time::HiRes(sleep);
@@ -21,10 +22,10 @@ my $count = 0;
 my $digest_hash = {};
 
 print "Loading data...\n";
-while (my $filename = readdir(FOLDER)) {   
+while (my $filename = readdir(FOLDER)) {
     next if ($filename eq "." or $filename eq "..");
     my $filepath = $folder.'/'.$filename;
-    next if (!-f$filepath);    
+    next if (!-f$filepath);
     $count++;
     if ($count%100 == 0) { print "$count "; }
     if ($count%1000 == 0) { print "\n"; }
@@ -32,7 +33,7 @@ while (my $filename = readdir(FOLDER)) {
     # get the files digest
     my $digest = md5($filepath);
     #print "File # $count: $digest $filename\n";
-    
+
     my $array = $digest_hash->{$digest};
     if (!$array) {
         my @new_array = ();
@@ -40,7 +41,7 @@ while (my $filename = readdir(FOLDER)) {
         $digest_hash->{$digest} = $array;
     }
     else {print ". "; }
-    
+
     push (@$array, $filepath);
 }
 closedir(FOLDER);
@@ -87,4 +88,3 @@ sub md5($) {
     }
     return $digest;
 }
-
